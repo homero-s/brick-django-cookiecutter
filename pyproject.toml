@@ -8,7 +8,16 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
     "django>=5.2.6",
+    "pre-commit>=4.3.0",
     "pytest-cookies>=0.7.0",
 ]
+
+[tool.ruff]
+# Enable the formatter
+line-length = 88  # same default as Black
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
