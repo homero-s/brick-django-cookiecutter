@@ -2,6 +2,10 @@
 
 A Cookiecutter template heavily influenced by [Cookiecutter Django](https://github.com/cookiecutter/cookiecutter-django), but much more opinionated.
 
+## Features
+
+- For Django 5.2
+- Docker using [docker-compose](https://github.com/docker/compose) is the only option to run the app.
 
 ## Requirements
 
