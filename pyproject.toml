@@ -5,3 +5,10 @@ description = "Brick Cookiecutter template for Django projects"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "django>=5.2.6",
+    "pytest-cookies>=0.7.0",
+]
