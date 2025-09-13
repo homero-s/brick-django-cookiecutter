@@ -1,0 +1,7 @@
+[project]
+name = "brick-django-cookiecutter"
+version = "0.1.0"
+description = "Brick Cookiecutter template for Django projects"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []

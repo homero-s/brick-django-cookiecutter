@@ -1,0 +1,14 @@
+{
+  "new_project": ["y", "n"],
+  "project_name": "My Awesome Brick",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "description": "A Django web application",
+  "author_name": "Brick Top",
+
+  "domain_name": "brick.com",
+  "email": "{{ cookiecutter.author_name.lower() | trim() |replace(' ', '-') }}@{{ cookiecutter.domain_name.lower() | trim() }}",
+  "env_type": ["dev", "prod"],
+
+  "timezone": "UTC",
+  "python_version": "3.13"
+}
