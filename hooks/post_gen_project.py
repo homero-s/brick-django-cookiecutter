@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
@@ -90,12 +91,31 @@ def setup_dependencies():
     print("Setup complete!")
 
 
+def remove_uv_compose_dir() -> None:
+    """Remove the compose/uv directory and its contents if present."""
+    uv_dir = Path("compose") / "uv"
+    if not uv_dir.exists():
+        return
+    if uv_dir.is_dir():
+        try:
+            shutil.rmtree(uv_dir)
+        except OSError:
+            pass
+    else:
+        try:
+            uv_dir.unlink()
+        except OSError:
+            pass
+
+
 def main() -> None:
     create_config_file()
 
     convert_env_example()
 
     setup_dependencies()
+
+    remove_uv_compose_dir()
 
 
 if __name__ == "__main__":
