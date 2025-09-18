@@ -68,3 +68,15 @@ def test_config_file_creation(cookies, context):
     # Verify key contents from context are present and correctly quoted
     for key, value in context.items():
         assert f'{key}: "{value}"' in contents
+
+
+def test_env_file_creation(cookies, context):
+    result = cookies.bake(extra_context=context)
+
+    # Assert .env was created from .env.example and example removed
+    env_path = result.project_path / ".env"
+    env_example_path = result.project_path / ".env.example"
+    assert env_path.exists(), ".env should be created by post_gen hook"
+    assert not env_example_path.exists(), (
+        ".env.example should be removed by post_gen hook"
+    )
