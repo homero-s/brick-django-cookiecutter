@@ -67,7 +67,6 @@ def setup_dependencies():
                 uv_image_tag,
                 "-f",
                 str(uv_docker_image_path),
-                "-q",
                 ".",
             ],
             check=True,
