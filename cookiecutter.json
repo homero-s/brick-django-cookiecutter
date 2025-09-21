@@ -9,6 +9,7 @@
   "email": "{{ cookiecutter.author_name.lower() | trim() |replace(' ', '-') }}@{{ cookiecutter.domain_name.lower() | trim() }}",
   "env_type": ["dev", "prod"],
 
+  "postgresql_version": ["17", "16", "15"],
   "timezone": "UTC",
   "python_version": "3.13"
 }

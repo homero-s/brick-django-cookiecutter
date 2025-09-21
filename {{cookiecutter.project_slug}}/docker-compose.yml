@@ -15,3 +15,20 @@ services:
     env_file:
       - ./.env
     hostname: django-{{ cookiecutter.env_type }}
+
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/postgres/Dockerfile
+    image: '{{ cookiecutter.project_slug }}-{{ cookiecutter.env_type }}-postgres'
+    volumes:
+      - {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_data:/var/lib/postgresql/data
+      - {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_backups:/backups
+    env_file:
+      - ./.env
+
+
+volumes:
+  {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_data: {}
+  {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_backups: {}
