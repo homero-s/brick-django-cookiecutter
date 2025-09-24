@@ -11,10 +11,8 @@ services:
       - '8000:8000'
     command: /start
     image: '{{ cookiecutter.project_slug }}-{{ cookiecutter.env_type }}-django'
-    container_name: '{{ cookiecutter.project_slug }}-{{ cookiecutter.env_type }}-django'
     env_file:
       - ./.env
-    hostname: django-{{ cookiecutter.env_type }}
 
 
   postgres:

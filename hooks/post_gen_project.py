@@ -15,6 +15,10 @@ except NotImplementedError:
     using_sysrandom = False
 
 
+DEBUG = True if "{{ cookiecutter.env_type }}" == "dev" else False
+ENV_PATH = Path(".env")
+
+
 def _yaml_escape(value: str) -> str:
     # Quote all values to keep YAML simple and robust.
     s = str(value)
@@ -45,17 +49,16 @@ def convert_env_example() -> None:
     example_path = Path(".env.example")
     if not example_path.exists():
         return
-    dest_path = Path(".env")
-    if dest_path.exists():
+    if ENV_PATH.exists():
         try:
             example_path.unlink()
         except OSError:
             pass
         return
     try:
-        example_path.rename(dest_path)
+        example_path.rename(ENV_PATH)
     except OSError:
-        dest_path.write_text(example_path.read_text(encoding="utf-8"), encoding="utf-8")
+        ENV_PATH.write_text(example_path.read_text(encoding="utf-8"), encoding="utf-8")
         try:
             example_path.unlink()
         except OSError:
@@ -94,7 +97,7 @@ def setup_dependencies():
             [*uv_cmd, "add", "--no-sync", "-r", "requirements.txt"], check=True
         )
     except subprocess.CalledProcessError as e:
-        print(f"Error installing production dependencies: {e}", file=sys.stderr)
+        print(f"Error installing dependencies: {e}", file=sys.stderr)
         sys.exit(1)
 
     print("Setup complete!")
@@ -142,21 +145,21 @@ def generate_random_string(
     return "".join([random.choice(symbols) for _ in range(length)])
 
 
-def set_flag(file_path: Path, flag, value=None, formatted=None, *args, **kwargs):
+def set_env_var(file_path: Path, env_var, value=None, formatted=None, *args, **kwargs):
     if value is None:
         random_string = generate_random_string(*args, **kwargs)
         if random_string is None:
             print(
                 "We couldn't find a secure pseudo-random number generator on your "
-                f"system. Please, make sure to manually {flag} later.",
+                f"system. Please, make sure to manually set {env_var} later.",
             )
-            random_string = flag
+            random_string = env_var
         if formatted is not None:
             random_string = formatted.format(random_string)
         value = random_string
 
     with file_path.open("r+") as f:
-        file_contents = f.read().replace(flag, value)
+        file_contents = f.read().replace(env_var, value)
         f.seek(0)
         f.write(file_contents)
         f.truncate()
@@ -164,9 +167,9 @@ def set_flag(file_path: Path, flag, value=None, formatted=None, *args, **kwargs)
     return value
 
 
-def set_django_secret_key(file_path: Path):
-    return set_flag(
-        file_path,
+def set_django_secret_key():
+    return set_env_var(
+        ENV_PATH,
         "supersecret",
         length=64,
         using_digits=True,
@@ -175,16 +178,40 @@ def set_django_secret_key(file_path: Path):
     )
 
 
+def generate_postgres_user():
+    if DEBUG:
+        return "debug"
+    else:
+        return generate_random_string(length=32, using_ascii_letters=True)
+
+
+def set_postgres_user():
+    pg_user = generate_postgres_user()
+    return set_env_var(ENV_PATH, "changeme_pg_user", value=pg_user)
+
+
+def set_postgres_password(value=None):
+    if DEBUG:
+        value = "debug"
+    return set_env_var(
+        ENV_PATH,
+        "changeme_pg_pw",
+        value=value,
+        length=64,
+        using_digits=True,
+        using_ascii_letters=True,
+    )
+
+
 def main() -> None:
     create_config_file()
-
     convert_env_example()
-
     setup_dependencies()
-
     remove_uv_compose_dir()
+    set_django_secret_key()
 
-    set_django_secret_key(Path(".env"))
+    set_postgres_user()
+    set_postgres_password()
 
 
 if __name__ == "__main__":
