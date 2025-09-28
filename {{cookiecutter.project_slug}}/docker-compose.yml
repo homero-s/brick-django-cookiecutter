@@ -8,7 +8,7 @@ services:
       - /app/.venv
       - ./app:/app:z
     command: /start
-    image: '{{ cookiecutter.project_slug }}-{{ cookiecutter.env_type }}-django'
+    image: 'django-{{ cookiecutter.env_type }}-{{ cookiecutter.project_slug }}'
   {%- if cookiecutter.env_type == 'dev' %}
     ports:
       - "8000:8000"
@@ -25,7 +25,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/postgres/Dockerfile
-    image: '{{ cookiecutter.project_slug }}-{{ cookiecutter.env_type }}-postgres'
+    image: 'postgres-{{ cookiecutter.env_type }}-{{ cookiecutter.project_slug }}'
     volumes:
       - {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_data:/var/lib/postgresql/data
       - {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_backups:/backups
