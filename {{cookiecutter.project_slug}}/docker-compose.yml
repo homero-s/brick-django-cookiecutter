@@ -9,6 +9,10 @@ services:
       - ./app:/app:z
     command: /start
     image: '{{ cookiecutter.project_slug }}-{{ cookiecutter.env_type }}-django'
+  {%- if cookiecutter.env_type == 'dev' %}
+    ports:
+      - "8000:8000"
+  {%- endif %}
     env_file:
       - .env
     labels:
