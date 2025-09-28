@@ -5,12 +5,13 @@ A Cookiecutter template heavily influenced by [Cookiecutter Django](https://gith
 ## Features
 
 - For Django 5.2
-- Docker using [docker-compose](https://github.com/docker/compose) is the only option to run the app.
+- Docker EVERYWHERE with [docker-compose](https://github.com/docker/compose)
 
 ## Requirements
 
 - Python 3.x
 - [Cookiecutter](https://github.com/cookiecutter/cookiecutter)
+- Assumes Dev env is MacOS and Prod env is Ubuntu LTS
 
 ## Quick Start
 

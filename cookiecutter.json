@@ -5,7 +5,7 @@
   "description": "A Django web application",
   "author_name": "Brick Top",
 
-  "domain_name": "example.com",
+  "domain_name": "example.local",
   "email": "{{ cookiecutter.author_name.lower() | trim() |replace(' ', '-') }}@{{ cookiecutter.domain_name.lower() | trim() }}",
   "env_type": ["dev", "prod"],
 
