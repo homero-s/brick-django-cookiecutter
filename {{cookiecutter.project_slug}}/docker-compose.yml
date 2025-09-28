@@ -7,13 +7,15 @@ services:
     volumes:
       - /app/.venv
       - ./app:/app:z
-    ports:
-      - '8000:8000'
     command: /start
     image: '{{ cookiecutter.project_slug }}-{{ cookiecutter.env_type }}-django'
     env_file:
-      - ./.env
-
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.django.rule=Host(`{{ cookiecutter.domain_name }}`)"
+      - "traefik.http.routers.django.entrypoints=web"
+      - "traefik.http.services.django.loadbalancer.server.port=8000"
 
   postgres:
     build:
@@ -24,8 +26,18 @@ services:
       - {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_data:/var/lib/postgresql/data
       - {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_backups:/backups
     env_file:
-      - ./.env
+      - .env
 
+  traefik:
+    image: traefik:v3.5
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   {{ cookiecutter.project_slug }}_{{ cookiecutter.env_type }}_postgres_data: {}
