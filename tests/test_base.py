@@ -3,6 +3,7 @@ from pathlib import Path
 from collections.abc import Iterable
 from binaryornot.check import is_binary
 import re
+from dotenv import dotenv_values
 
 PATTERN = r"{{(\s?cookiecutter)[.](.*?)}}"
 RE_OBJ = re.compile(PATTERN)
@@ -13,8 +14,8 @@ def context():
     return {
         "project_name": "My Brick Test",
         "project_slug": "my_brick_test",
-        "author_name": "Brick Top",
-        "email": "top@brick.com",
+        "author_name": "Test Brick",
+        "email": "brick@test.com",
         "timezone": "UTC",
     }
 
@@ -80,3 +81,22 @@ def test_env_file_creation(cookies, context):
     assert not env_example_path.exists(), (
         ".env.example should be removed by post_gen hook"
     )
+
+
+def test_env_substitutions(cookies, context):
+    """Ensure .env contains rendered values based on cookiecutter context."""
+    result = cookies.bake(extra_context=context)
+
+    assert result.exit_code == 0
+    assert result.exception is None
+
+    # Testing that the .ev file was created
+    env_path = result.project_path / ".env"
+    assert env_path.exists(), ".env should be created"
+
+    # Loading env vars from .env to dict
+    env_values = dotenv_values(env_path)
+
+    assert env_values["DJANGO_SECRET_KEY"] == "debug"
+    assert env_values["POSTGRES_USER"] == "debug"
+    assert env_values["POSTGRES_PASSWORD"] == "debug"

@@ -168,9 +168,12 @@ def set_env_var(file_path: Path, env_var, value=None, formatted=None, *args, **k
 
 
 def set_django_secret_key():
+    if DEBUG:
+        value = "debug"
     return set_env_var(
         ENV_PATH,
         "supersecret",
+        value=value,
         length=64,
         using_digits=True,
         using_ascii_letters=True,
