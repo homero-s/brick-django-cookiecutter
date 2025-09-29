@@ -206,6 +206,29 @@ def set_postgres_password(value=None):
     )
 
 
+def update_hosts_file():
+    # This works only in Dev environments
+    if "{{ cookiecutter.env_type }}" != "dev":
+        return
+
+    file_path = Path("/etc/hosts")
+    domain_name = "{{ cookiecutter.domain_name }}"
+    ip_address = "127.0.0.1"
+
+    # Checks to see if an entry with domain already exists in /etc/hosts
+    result = subprocess.run(
+        ["grep", domain_name, file_path], capture_output=True, text=True
+    )
+    if result.stdout:
+        print("Entry exists in hosts file")
+        print(result.stdout)
+    else:
+        entry = f"{ip_address} {domain_name}"
+        command = ["sudo", "bash", "-c", f'echo "{entry}" >> {file_path}']
+        subprocess.run(command)
+        print(f'Added "{entry}" to /etc/hosts')
+
+
 def main() -> None:
     create_config_file()
     convert_env_example()
@@ -215,6 +238,8 @@ def main() -> None:
 
     set_postgres_user()
     set_postgres_password()
+
+    update_hosts_file()
 
 
 if __name__ == "__main__":
