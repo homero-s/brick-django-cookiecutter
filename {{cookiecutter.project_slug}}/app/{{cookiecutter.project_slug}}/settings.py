@@ -28,7 +28,10 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
-ALLOWED_HOSTS = [env("ALLOWED_HOSTS")]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["{{cookiecutter.domain_name}}"])
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS", default=["{{cookiecutter.domain_name}}"]
+)
 
 # Application definition
 
